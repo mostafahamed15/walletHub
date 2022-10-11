@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WalletHub Slicing Test</title>
+  <link rel="stylesheet" href="./css/fonts.css">
+  <link rel="stylesheet" href="./css/main.css">
+  <link rel="stylesheet" href="./css/main.css">
+  <link rel="stylesheet" href="./css/desktop.css">
+</head>
+
+<body>
+  <header>
+    <nav>
+      <ul>
+        <li><a href="#"><span class="desktop-only">Navigation</span> Link One</a></li>
+        <li><a href="#"><span class="desktop-only">Navigation</span> Link Two</a></li>
+        <li><a href="#"><span class="desktop-only">Navigation</span> Link Three</a></li>
+      </ul>
+    </nav>
+    <section id="hero">
+      <h1>Do the right thing</h1>
+      <picture>
+        <source media="(min-width: 768px)" srcset="./images/BannerImage-Desktop.svg">
+        <img src="./images/BannerImage-Mobile.svg" alt="Credit card banner image">
+      </picture>
+    </section>
+  </header>
+  <section id="credit-card-call-to-action" class="call-to-action">
+    <h4 class="call-to-action__header">Credit Opportunities With Good Approval Odds<sup>†</sup></h4>
+    <div class="call-to-action__card">
+      <div class="flex row space-between">
+        <h6 class="call-to-action__card__header">Barclaycard CashForward<sup>TM</sup> World MasterCard<sup>TM</sup>
+        </h6>
+        <div id="reviews" class="call-to-action__card__reviews desktop-only">
+          <img src="./images/stars.png" alt="4 Stars" class="call-to-action__card__reviews_stars">
+          <span class="call-to-action__card__reviews_text">3,252 Reviews</span>
+        </div>
+      </div>
+      <div class="call-to-action__card__wrapper">
+        <div class="desktop-left">
+          <div class="flex row space-between">
+            <img src="./images/visa.svg" alt="Visa Card Image" class="call-to-action__card__image">
+            <div class="flex column">
+              <div class="call-to-action__card__caption">Approval Odds<sup>†</sup></div>
+              <div class="call-to-action__card__chip">Very Good</div>
+            </div>
+          </div>
+          <button id="apply-btn" class="call-to-action__btn desktop-only">Apply Now</button>
+        </div>
+        <ul class="call-to-action__card__list">
+          <li>
+            Get a $100 cash rewards bonus after you spend $500 in purchases in the first 90 days after account oppening.
+          </li>
+          <li>
+            Earn unlimited 1.5% cash rewards on every purcahse.
+          </li>
+          <li>
+            Earn unlimited 1.5% cash rewards on every<span class="more">...</span><span class="show_more">show
+              more</span>
+          </li>
+        </ul>
+      </div>
+      <button id="apply-btn" class="call-to-action__btn mobile-only">Apply Now</button>
+      <hr class="call-to-action__card_divider">
+      <a href="#" class="call-to-action__card__rates_link">See Details Rates & Fees</a>
+    </div>
+  </section>
+</body>
+
+</html>
