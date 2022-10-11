@@ -1,89 +1,93 @@
 /**
- * Fix the following issues in the component :
- * * ExpressionChangedAfterItHasBeenCheckedError
- * * Spot the memory leak
- *
+ * Fix the following component so that it meets the requirements:
+ * * The [textarea] becomes a user inputed property.
+ * * The content that user inputs will preserve its whitespaces and linebreaks when printed under the [review_content] property
+ * * It should not allow rendering of html tags to prevent a security vulnerability (keep the inner text however)
+ * * If the user enters a link in the content (ex : https://wallethub.com) it should become an anchor element when printed in the page
  */
-import {
-  Component,
-  NgModule,
-  Injectable,
-  Input,
-  AfterViewChecked,
-} from '@angular/core';
-import { RouterModule, Router } from '@angular/router';
+import { Component, NgModule } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { BehaviorSubject, Subscription } from 'rxjs';
-
-@Injectable()
-export class TestService {
-  test: BehaviorSubject<string>;
-
-  constructor() {
-    this.test = new BehaviorSubject('angular test #5');
-  }
-
-  SetTest(test: string) {
-    this.test.next(test);
-  }
-}
+import { FormsModule } from '@angular/forms';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Component({
   selector: 'ng-app',
   template: `
-    <h2>Current test is:</h2>
-    {{ test }}
-    <br />
-    <child [skip-current]="true"></child>
+    <h2>User Review:</h2>
+    <textarea
+      class="textfield"
+      [(ngModel)]="review_input"
+      (keyup)="textAreaValue()"
+    ></textarea>
+    <br /><br />
+    <h3>Output:</h3>
+    <div class="output" [innerHTML]="review_content"></div>
   `,
-  styles: [],
+  styles: [
+    `
+      .textfield {
+        width: 600px;
+        height: 220px;
+        padding: 10px;
+        box-sizing: border-box;
+      }
+    `,
+    `
+      .output {
+        max-width: 100%;
+        width: 600px;
+        border: solid 1px #f9f6f6;
+        padding: 5px;
+        background: #ecebeb;
+      }
+    `,
+  ],
 })
-export class MainComponent {
-  test: string = null;
-  subscribtion: Subscription;
-  constructor(private _srv: TestService) {}
+export class ReviewComponent {
+  // sample input
+  review_input = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+ Maecenas tincidunt vestibulum ligula, sed viverra erat tempus nec. 
+ 
+ Pellentesque blandit mauris congue elit eleifend, facilisis tristique dolor dictum:
+           1) Nulla et tempus orci
+           2) Integer semper porttitor faucibus
+           <br />
+ At https://wallethub.com <b>bolded text</b>`;
+
+  review_content: SafeHtml = '';
+  urlRegex: RegExp = /(https?:\/\/[^\s]+)/g;
+  constructor(private sanitizer: DomSanitizer) {}
 
   ngOnInit() {
-    this.subscribtion = this._srv.test.subscribe((test) => {
-      this.test = test;
-    });
+    this.review_content = this.sanitizer.bypassSecurityTrustHtml(
+      this.urlify(this.review_input.replace(/(?:\r\n|\r|\n)/g, '<br>'))
+    );
   }
 
-  ngOnDestroy() {
-    this.subscribtion.unsubscribe();
+  urlify(text: string) {
+    var urlRegex = /(https?:\/\/[^\s]+)/g;
+
+    return text.replace(urlRegex, '<a href="$1" target="_blank">$1</a>');
   }
-}
-
-@Component({
-  selector: 'child',
-  template: `Sample Child component<br />
-    <button (click)="Next()">next test</button>`,
-})
-export class TextChildComponent implements AfterViewChecked {
-  @Input('skip-current') skip = false;
-
-  constructor(private _srv: TestService, private _router: Router) {}
-
-  Next() {
-    this._router.navigate(['test-six']);
-  }
-
-  ngAfterViewChecked() {
-    if (this.skip) this._srv.SetTest('angular test #6');
+  textAreaValue() {
+    this.review_content = this.sanitizer.bypassSecurityTrustHtml(
+      this.urlify(this.review_input.replace(/(?:\r\n|\r|\n)/g, '<br>'))
+    );
   }
 }
 
 @NgModule({
   imports: [
     CommonModule,
+    FormsModule,
     RouterModule.forChild([
       {
         path: '',
-        component: MainComponent,
+        component: ReviewComponent,
       },
     ]),
   ],
-  declarations: [MainComponent, TextChildComponent],
-  providers: [TestService],
+  declarations: [ReviewComponent],
 })
-export class MainModule {}
+export class ReviewModule {}
